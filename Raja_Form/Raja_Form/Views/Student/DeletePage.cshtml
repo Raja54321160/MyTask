@@ -1,0 +1,158 @@
+﻿@model Raja_Form.Models.Student
+
+<h3>Student Detail Delete</h3>
+
+
+<form asp-action="DeletePage" method="post" enctype="multipart/form-data">
+    <div style="display:none">
+        <label asp-for="Id">Id:</label>
+        <input asp-for="Id" type="text" name="Id" readonly />
+    </div>
+    <div>
+        <label asp-for="Name">Name:</label>
+        <input asp-for="Name" type="text" name="Name" readonly />
+    </div><br>
+
+    <div>
+        <label asp-for="DOB">DOB:</label>
+        <input asp-for="DOB" type="date" name="DOB" readonly disabled />
+    </div><br>
+
+    <div>
+        <label asp-for="Age">Age (18-100):</label>
+        <input asp-for="Age" type="range" name="Age" min="18" max="100" disabled/>
+    </div><br />
+
+    <div>
+        <label asp-for="Gender">Gender:</label>
+        <input asp-for="Gender" type="radio" name="Gender" value="Male" disabled/> Male
+        <input asp-for="Gender" type="radio" name="Gender" value="Female" disabled/> Female
+    </div><br />
+
+    <div>
+        <label asp-for="Country">Country:</label>
+        <select asp-for="Country" name="Country" disabled>
+            <option disabled> --Selecte Country -- </option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+        </select>
+    </div><br />
+
+    <div>
+        <label asp-for="IsEnrolled">Enrolled:</label>
+        <input asp-for="IsEnrolled" type="checkbox" name="IsEnrolled" disabled/>
+    </div><br />
+
+    <div>
+        <label asp-for="Subjects">Subjects:</label>
+        <input asp-for="Subjects" id="Subjects" type="text" oninput="syncCheckboxes()" readonly style="display:none" disabled /><br />
+        <input type="checkbox" name="Subjects" value="Tamil" onchange="updateSubject()" disabled /> Tamil
+        <input type="checkbox" name="Subjects" value="English" onchange="updateSubject()" disabled /> English
+        <input type="checkbox" name="Subjects" value="Math" onchange="updateSubject()" disabled /> Math
+        <input type="checkbox" name="Subjects" value="Science" onchange="updateSubject()" disabled /> Science
+        <input type="checkbox" name="Subjects" value="Social" onchange="updateSubject()" disabled /> Social
+    </div><br />
+
+    <div>
+        <label asp-for="FavoriteColor">Favorite Color:</label>
+        <input asp-for="FavoriteColor" type="color" name="FavoriteColor" disabled />
+    </div><br />
+
+    <div>
+        <label asp-for="Image">Upload Image:</label>
+        <input type="file" name="Image" accept="image/*" disabled/>
+
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div>
+                <label>Image:</label><br />
+                <img src="@Url.Content(Model.ImagePath)" alt="Previous Image" style="max-width: 200px; height: auto;" />
+            </div>
+        }
+        else
+        {
+            <p>Image path not set. Check if the image was uploaded correctly.</p>
+        }
+
+    </div><br />
+    <div>
+        <label asp-for="Video">Upload Video:</label>
+        <input type="file" name="Video" accept="video/*" disabled/>
+        @if (!string.IsNullOrEmpty(Model.VideoPath))
+        {
+            <div>
+                <label>Video :</label><br />
+                <video width="320" height="240" controls>
+                    <source src="@Url.Content(Model.VideoPath)" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        }
+        else
+        {
+            <p>Video path not set. Check if the image was uploaded correctly.</p>
+        }
+    </div><br />
+    <div>
+        <label asp-for="Audio">Upload Audio:</label>
+        <input type="file" name="Audio" accept="audio/*" disabled/>
+        @if (!string.IsNullOrEmpty(Model.AudioPath))
+        {
+            <div>
+                <label>Audio:</label><br />
+                <audio controls>
+                    <source src="@Url.Content(Model.AudioPath)" type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        }
+        else
+        {
+            <p>Audio path not set. Check if the image was uploaded correctly.</p>
+        }
+    </div><br />
+
+    <div>
+        <br />
+        <a href="~/Student/Details" class="btn btn-primary">
+            Back
+        </a>
+        <a href="~/Student/Delete?id=@Model.Id" class="btn btn-primary" onclick="return confirm('Are you sure you want to delete this item?');">
+            Delete
+        </a>
+    </div>
+
+</form>
+
+<script>
+    function updateSubject() {
+        var checked = document.querySelectorAll('input[name="Subjects"]:checked');
+        var values = Array.from(checked).map(c => c.value);
+        document.getElementById('Subjects').value = values.join(',');
+    }
+
+    function syncCheckboxes() {
+
+        var textVal = document.getElementById('Subjects').value;
+        var selected = textVal.split(',').map(s => s.trim().toLowerCase());
+
+        var checkboxes = document.querySelectorAll('input[name="Subjects"]');
+        checkboxes.forEach(cb => {
+            cb.checked = selected.includes(cb.value.toLowerCase());
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var textVal = document.getElementById('Subjects').value;
+        var selected = textVal.split(',').map(s => s.trim().toLowerCase());
+
+        var checkboxes = document.querySelectorAll('input[name="Subjects"]');
+        checkboxes.forEach(cb => {
+            cb.checked = selected.includes(cb.value.toLowerCase());
+        });
+    });
+
+</script>
+

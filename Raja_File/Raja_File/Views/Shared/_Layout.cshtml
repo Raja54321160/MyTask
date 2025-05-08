@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("Home", "Index", "File", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@*@Html.ActionLink("Home", "Index", "File", new { area = "" }, new { @class = "nav-link" })*@</li>
+                    <li>@Html.ActionLink("Upload File", "UploadFile", "File", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("View Data", "ViewData", "File", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+
+
+        api page
+        using System;
+        using System.Collections.Generic;
+        using System.IO;
+        using System.Linq;
+        using System.Net;
+        using System.Net.Http;
+        using System.Web;
+        using System.Web.Http;
+        using Raja_File_API.Models;
+
+        namespace Raja_File_API.Controllers
+        {
+        [RoutePrefix("api/file")] // <-- Required to build full route
+                                         public class FileController : ApiController
+                                         {
+                                         [HttpPost]
+                                         [Route("upload")]
+                                         public IHttpActionResult Upload()
+                                         {
+                                         try
+                                         {
+                                         var httpRequest=HttpContext.Current.Request;
+                                         var file=httpRequest.Files["file"];
+                                         List<DataRecord> records = new List<DataRecord>();
+                List<string> columnHeader = new List<string>();
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    using (var reader = new StreamReader(file.InputStream))
+                    {
+                        var rawLines = new List<string[]>();
+                        int maxCols = 0;
+
+                        while (!reader.EndOfStream)
+                        {
+                            var line = reader.ReadLine()?.Trim();
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                var parts = line
+                                    .Split(',')
+                                    .Select(p => p.Trim())
+                                    .Where(p => !string.IsNullOrEmpty(p)) // Exclude empty values
+                                    .ToArray();
+
+                                if (parts.Length > 0)
+                                {
+                                    rawLines.Add(parts);
+                                    maxCols = Math.Max(maxCols, parts.Length);
+                                }
+                            }
+
+                        }
+
+                        // Determine header as the row with max columns
+                        var headerRow = rawLines.FirstOrDefault(r => r.Length == maxCols);
+                        columnHeader = headerRow != null
+                            ? headerRow.Select(h => string.IsNullOrWhiteSpace(h) ? "Column" : h).ToList()
+                            : Enumerable.Range(1, maxCols).Select(i => $"Column{i}").ToList();
+
+                        foreach (var lineParts in rawLines)
+                        {
+                            // Skip the header row
+                            if (lineParts.SequenceEqual(headerRow))
+                                continue;
+
+                            var paddedParts = lineParts.Concat(
+                                Enumerable.Repeat(string.Empty, maxCols - lineParts.Length)
+                            ).ToList();
+
+                            records.Add(new DataRecord
+                            {
+                                Columns = paddedParts
+                            });
+                        }
+                    }
+                }
+
+                return Ok(records);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Upload Error Is: {ex.Message}");
+            }
+        }
+    }
+}
+
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+
+api page
+
+controller using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using Raja_File_API.Models;
+
+namespace Raja_File_API.Controllers
+{
+    [RoutePrefix("api/file")] // <-- Required to build full route
+                                     public class FileController : ApiController
+                                     {
+                                     [HttpPost]
+                                     [Route("upload")]
+                                     public IHttpActionResult Upload()
+                                     {
+                                     try
+                                     {
+                                     var httpRequest=HttpContext.Current.Request;
+                                     var file=httpRequest.Files["file"];
+                                     List<DataRecord> records = new List<DataRecord>();
+                List<string> columnHeader = new List<string>();
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    using (var reader = new StreamReader(file.InputStream))
+                    {
+                        var rawLines = new List<string[]>
+    ();
+    int maxCols = 0;
+
+    while (!reader.EndOfStream)
+    {
+    var line = reader.ReadLine()?.Trim();
+    if (!string.IsNullOrWhiteSpace(line))
+    {
+    var parts = line
+    .Split(',')
+    .Select(p => p.Trim())
+    .Where(p => !string.IsNullOrEmpty(p)) // Exclude empty values
+    .ToArray();
+
+    if (parts.Length > 0)
+    {
+    rawLines.Add(parts);
+    maxCols = Math.Max(maxCols, parts.Length);
+    }
+    }
+
+    }
+
+    // Determine header as the row with max columns
+    var headerRow = rawLines.FirstOrDefault(r => r.Length == maxCols);
+    columnHeader = headerRow != null
+    ? headerRow.Select(h => string.IsNullOrWhiteSpace(h) ? "Column" : h).ToList()
+    : Enumerable.Range(1, maxCols).Select(i => $"Column{i}").ToList();
+
+    foreach (var lineParts in rawLines)
+    {
+    // Skip the header row
+    if (lineParts.SequenceEqual(headerRow))
+    continue;
+
+    var paddedParts = lineParts.Concat(
+    Enumerable.Repeat(string.Empty, maxCols - lineParts.Length)
+    ).ToList();
+
+    records.Add(new DataRecord
+    {
+    Columns = paddedParts
+    });
+    }
+    }
+    }
+
+    return Ok(records);
+    }
+    catch (Exception ex)
+    {
+    return BadRequest($"Upload Error Is: {ex.Message}");
+    }
+    }
+    }
+    }
+
+    controller values
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Web.Http;
+
+    namespace Raja_File_API.Controllers
+    {
+    public class ValuesController : ApiController
+    {
+    // GET api/values
+    public IEnumerable<string>
+        Get()
+        {
+        return new string[] { "value1", "value2" };
+        }
+
+        // GET api/values/5
+        public string Get(int id)
+        {
+        return "value";
+        }
+
+        // POST api/values
+        public void Post([FromBody] string value)
+        {
+        }
+
+        // PUT api/values/5
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE api/values/5
+        public void Delete(int id)
+        {
+        }
+        }
+        }
+

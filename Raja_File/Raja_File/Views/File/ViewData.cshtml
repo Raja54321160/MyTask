@@ -1,0 +1,32 @@
+﻿@model List<Raja_File.Models.DataRecord>
+
+<h2>Uploaded Data</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                @for (int i = 0; i < Model[0].Columns.Count; i++)
+                {
+                    <th>@("Column " + (i + 1))</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model)
+            {
+                <tr>
+                    @foreach (var cell in row.Columns)
+                    {
+                        <td>@cell</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No data found.</p>
+}

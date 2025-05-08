@@ -1,0 +1,75 @@
+﻿
+@model IEnumerable<Raja_Form.Models.Student>
+
+<style>
+	table, tr, th, td {
+	border:2px solid black;
+	padding:10px;
+	}
+</style>
+
+<center>
+	<h3>Student Details</h3>
+	<table>
+		<tr>
+			<th>S.No.</th>
+			<th>Name</th>
+			<th>Date_Of_ Birth</th>
+			<th>Age</th>
+			<th>Gender</th>
+			<th>Country</th>
+			<th>Entrolled</th>
+			<th>Subjects</th>
+			<th>FavoriteColor</th>
+			<th>ImagePath</th>
+			<th>VideoPath</th>
+			<th>AudioPath</th>
+			<th>Action</th>
+		</tr>
+		@{
+			int a = 0;
+		}
+		@foreach(var dts in Model)
+		{
+			a++;
+			<tr>				
+				<td>@a</td>
+				<td>@dts.Name</td>
+				<td>@dts.DOB</td>
+				<td>@dts.Age</td>
+				<td>@dts.Gender</td>
+				<td>@dts.Country</td>
+				<td>@(dts.IsEnrolled ? "✔️" : "❌")</td>
+				<td>@dts.Subjects</td>
+				<td>
+					<div style="width: 20px; height: 20px; background-color: @dts.FavoriteColor; border: 1px solid #000;"></div>
+				</td>
+				<td>
+					@if(!string.IsNullOrEmpty(dts.ImagePath))
+					{
+						<img src="@dts.ImagePath" width="80" />
+					}
+				</td>
+				<td>
+					@if(!string.IsNullOrEmpty(dts.VideoPath))
+					{
+						<video width="100" controls>
+							<source src="@dts.VideoPath" type="video/mp4" />
+						</video>
+					}
+				</td>
+				<td>
+					@if(!string.IsNullOrEmpty(dts.AudioPath)) {
+						<audio controls>
+							<source src="@dts.AudioPath" type="audio/mpeg" />
+						</audio>
+					}
+				</td>
+				<td>
+					<a href="~/Student/Update?id=@dts.Id">Edit</a>
+					<a href="~/Student/DeletePage?id=@dts.Id">Delete</a>
+				</td>
+			</tr>
+		}
+	</table>
+</center>

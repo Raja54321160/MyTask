@@ -1,0 +1,109 @@
+﻿@using Newtonsoft.Json
+
+@model Raja_Country.Models.Location
+
+@{
+    var countries = ViewData["Countries"] as List<Country>;
+    var states = ViewData["State"] as List<State>;
+    var districts = ViewData["District"] as List<District>;
+
+    var jsonStates = JsonConvert.SerializeObject(states);
+    var jsonDistricts = JsonConvert.SerializeObject(districts);
+}
+
+<div>
+    @* <h3><a href="~/Country/Index">Home Page</a></h3>
+    <h3><a href="~/Country/Details">Location Details</a></h3> *@
+    <h3>Select Location</h3>
+    <form asp-action="Add" method="post" id="locationForm">
+        <label asp-for="Country" for="countryDropDown">Country:</label>
+        <select name="Country" id="countryDropDown" name="SelectedCountryId" class="form-control">
+            <option value="" disabled selected> -- Select Country -- </option>
+            @foreach (var c in countries)
+            {
+                <option value="@c.Name">@c.Name</option>
+            }
+        </select>
+
+        <label asp-for="State">State:</label>
+        <select name="State" id="stateDropdown" name="SelectedStateId" class="form-control" disabled>
+            <option value="" disabled selected> -- Select State -- </option>
+        </select>
+
+        <label asp-for="District">District:</label>
+        <select name="District" id="districtDropdown" name="SelectedDistrictId" class="form-control" disabled>
+            <option value="" disabled selected> -- Select District -- </option>
+        </select>
+
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    let allStates = @Html.Raw(jsonStates);
+    let allDistricts = @Html.Raw(jsonDistricts);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let countryDrop = document.getElementById("countryDropDown");
+        let stateDrop = document.getElementById("stateDropdown");
+        let districtDrop = document.getElementById("districtDropdown");
+
+        let countryVal = document.getElementById("countryDropDown").value;
+        let stateval = document.getElementById("stateDropdown");
+
+        if(countryVal == "") {
+            stateDrop.disabled = true;
+            districtDrop.disabled = true;
+        } else if (stateval == "") {
+            districtDrop.disabled = true;
+        }
+
+        countryDrop.addEventListener("change", function () {
+            let selectedCountry = this.value;
+
+            stateDrop.innerHTML = '<option value="" disabled selected> -- Select State -- </option>';
+            districtDrop.innerHTML = '<option value="" disabled selected> -- Select District -- </option>';
+
+            districtDrop.disabled = true;
+
+            if (selectedCountry) {
+                stateDrop.disabled = false;
+
+                let filterState = allStates.filter(s => s.CountryName == selectedCountry);
+
+                filterState.forEach(s => {
+                    let opt = document.createElement("option");
+                    opt.value = s.Name;  
+                    opt.text = s.Name; 
+                    stateDrop.add(opt);
+                });
+            } else {
+                stateDrop.disabled = true;
+                districtDrop.disabled = true;
+            }
+        });
+
+        stateDrop.addEventListener("change", function () {
+            let selectedState = this.value;
+
+            districtDrop.innerHTML = '<option value="" disabled selected> -- Select District -- </option>';
+
+            districtDrop.disabled = true;
+
+            if (selectedState) {
+                districtDrop.disabled = false;
+
+                let filterDistrict = allDistricts.filter(d => d.StateName == selectedState);
+
+                filterDistrict.forEach(d => {
+                    let opt = document.createElement("option");
+                    opt.value = d.Name;  
+                    opt.text = d.Name; 
+                    districtDrop.add(opt);
+                });
+            }
+        });
+    });
+
+</script>

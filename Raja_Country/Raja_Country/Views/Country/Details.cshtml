@@ -1,0 +1,53 @@
+﻿
+@model IEnumerable<Raja_Country.Models.Location>
+
+
+<style>
+	table, tr, th,td {
+		border: 2px solid black;
+		padding: 10px;
+	}
+	a {
+		text-decoration: none;
+	}
+</style>
+
+
+<div>
+	<center>
+		<h3>Location Details</h3>
+		@* <p><a href="~/Country/Index">Home Page</a></p>
+		<p><a href="~/Country/Add">New Location Add</a></p> *@
+		<table>
+			<tr>
+				<th>S.No.</th>
+				<th>Country</th>
+				<th>State</th>
+				<th>District</th>
+				<th>Action</th>
+			</tr>
+
+			@{
+				int a = 0;
+			}
+
+			@foreach (var dts in Model)
+			{
+				a++;
+				<tr>
+					<td>@a</td>
+					<td>@dts.Country</td>
+					<td>@dts.State</td>
+					<td>@dts.District</td>
+					<td>
+						<a href="~/Country/Update?id=@dts.Id">Edit</a>
+						<a href="~/Country/DeletePage?id=@dts.Id" >Delete</a>
+						@* <a href="~/Country/Delete?id=@dts.Id" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a> *@
+					</td>
+				</tr>
+
+			}
+		</table>
+	</center>
+	
+</div>

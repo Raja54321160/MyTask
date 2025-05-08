@@ -1,0 +1,110 @@
+﻿@model Raja_Form.Models.Student
+
+<h3>Student Detail Update</h3>
+
+
+<form asp-action="Update" method="post" enctype="multipart/form-data">
+    <div style="display:none">
+        <label asp-for="Id">Id:</label>
+        <input asp-for="Id" type="text" name="Id" readonly />
+    </div>
+    <div>
+        <label asp-for="Name">Name:</label>
+        <input asp-for="Name" type="text" name="Name" required />
+    </div><br>
+
+    <div>
+        <label asp-for="DOB">DOB:</label>
+        <input asp-for="DOB" type="date" name="DOB" required />
+    </div><br>
+
+    <div>
+        <label asp-for="Age">Age (18-100):</label>
+        <input asp-for="Age" type="range" name="Age" min="18" max="100" />
+    </div><br />
+
+    <div>
+        <label asp-for="Gender">Gender:</label>
+        <input asp-for="Gender" type="radio" name="Gender" value="Male" /> Male
+        <input asp-for="Gender" type="radio" name="Gender" value="Female" /> Female
+    </div><br />
+
+    <div>
+        <label asp-for="Country">Country:</label>
+        <select asp-for="Country" name="Country">
+            <option disabled> --Selecte Country -- </option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+        </select>
+    </div><br />
+
+    <div>
+        <label asp-for="IsEnrolled">Enrolled:</label>
+        <input asp-for="IsEnrolled" type="checkbox" name="IsEnrolled" />
+    </div><br />
+
+    <div>
+        <label asp-for="Subjects" >Subjects:</label>
+        <input asp-for="Subjects" id="Subjects" type="text" oninput="syncCheckboxes()" readonly style="display:none" /><br />
+        <input type="checkbox" name="Subjects" value="Tamil" onchange="updateSubject()" /> Tamil
+        <input type="checkbox" name="Subjects" value="English" onchange="updateSubject()" /> English
+        <input type="checkbox" name="Subjects" value="Math" onchange="updateSubject()" /> Math
+        <input type="checkbox" name="Subjects" value="Science" onchange="updateSubject()" /> Science
+        <input type="checkbox" name="Subjects" value="Social" onchange="updateSubject()" /> Social
+    </div><br />
+
+    <div>
+        <label asp-for="FavoriteColor">Favorite Color:</label>
+        <input asp-for="FavoriteColor" type="color" name="FavoriteColor" />
+    </div><br />
+
+    <div>
+        <label asp-for="Image">Upload Image:</label>
+        <input type="file" name="Image" accept="image/*" />
+    </div><br />
+    <div>
+        <label asp-for="Video">Upload Video:</label>
+        <input type="file" name="Video" accept="video/*" />
+    </div><br />
+    <div>
+        <label asp-for="Audio">Upload Audio:</label>
+        <input type="file" name="Audio" accept="audio/*" />
+    </div><br />
+
+    <div>
+        <button type="submit" style="background-color:lawngreen">Save</button>
+    </div>
+
+</form>
+
+<script>
+    function updateSubject() {
+        var checked = document.querySelectorAll('input[name="Subjects"]:checked');
+        var values = Array.from(checked).map(c => c.value);
+        document.getElementById('Subjects').value = values.join(',');
+    }
+
+    function syncCheckboxes() {
+
+        var textVal = document.getElementById('Subjects').value;
+        var selected = textVal.split(',').map(s => s.trim().toLowerCase());
+
+        var checkboxes = document.querySelectorAll('input[name="Subjects"]');
+        checkboxes.forEach(cb => {
+            cb.checked = selected.includes(cb.value.toLowerCase());
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var textVal = document.getElementById('Subjects').value;
+        var selected = textVal.split(',').map(s => s.trim().toLowerCase());
+
+        var checkboxes = document.querySelectorAll('input[name="Subjects"]');
+        checkboxes.forEach(cb => {
+            cb.checked = selected.includes(cb.value.toLowerCase());
+        });
+    });
+
+</script>
